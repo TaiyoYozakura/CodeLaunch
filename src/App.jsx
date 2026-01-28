@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LandingPage from './components/LandingPage';
 import Navbar from './components/Navbar';
 import TabContent from './components/TabContent';
-import { tabTimers, tabPasswords, passwordDialogDelay, reloadProtectionDuration } from './constants';
+import { tabTimers, tabPasswords, passwordDialogDelay, reloadProtectionDuration, bonusRoundMessage, bonusRoundMinTime } from './constants';
 import { logError, showUserError, validatePassword, validateTabTransition } from './utils/errorHandler';
 
 function App() {
@@ -14,6 +14,11 @@ function App() {
   const [nextTabToUnlock, setNextTabToUnlock] = useState('');
   const [tabStartTime, setTabStartTime] = useState(null);
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showBonusDialog, setShowBonusDialog] = useState(false);
+  const [showBonusRound, setShowBonusRound] = useState(false);
+  const [bonusCompleteEnabled, setBonusCompleteEnabled] = useState(false);
+  const [noButtonClicks, setNoButtonClicks] = useState(0);
+  const [noButtonPosition, setNoButtonPosition] = useState({ top: '50vh', left: '60vw' });
   const [error, setError] = useState(null);
 
   const tabs = ['kickoff', 'detect', 'predict', 'transform', 'decoded'];
@@ -85,7 +90,8 @@ function App() {
             newTimers[tab] -= 1;
             hasChanges = true;
 
-            if (newTimers[tab] === 0) {
+            // Don't auto-unlock predict tab - it requires bonus round
+            if (newTimers[tab] === 0 && tab !== 'predict') {
               setUnlockedTabs(current => [...current, tab]);
             }
           }
@@ -149,6 +155,13 @@ function App() {
       await new Promise(resolve => setTimeout(resolve, 500));
       
       if (password.toUpperCase() === tabPasswords[nextTabToUnlock]) {
+        // Special handling for predict tab - show bonus dialog
+        if (nextTabToUnlock === 'predict') {
+          setShowBonusDialog(true);
+          setShowPasswordDialog(false);
+          return;
+        }
+        
         setUnlockedTabs(current => [...current, nextTabToUnlock]);
         setActiveTab(nextTabToUnlock);
         setTabStartTime(Date.now());
@@ -168,6 +181,51 @@ function App() {
       showUserError('Failed to process password. Please try again.');
     } finally {
       setIsProcessing(false);
+    }
+  };
+
+  const handleBonusAccept = () => {
+    setShowBonusDialog(false);
+    setShowBonusRound(true);
+    setBonusCompleteEnabled(false);
+    setNoButtonClicks(0);
+    setNoButtonPosition({ top: '50vh', left: '60vw' });
+    showUserError('Welcome to the Bonus Round! Good luck!', 'success');
+    
+    // Enable complete button after minimum time
+    setTimeout(() => {
+      setBonusCompleteEnabled(true);
+    }, bonusRoundMinTime * 1000);
+  };
+
+  const handleBonusComplete = () => {
+    if (!bonusCompleteEnabled) return;
+    setShowBonusRound(false);
+    setBonusCompleteEnabled(false);
+    setUnlockedTabs(current => [...current, 'predict']);
+    setActiveTab('predict');
+    setTabStartTime(Date.now());
+    showUserError('Bonus Round completed! Proceeding to Predict round.', 'success');
+  };
+
+  const handleBonusDecline = () => {
+    const newClicks = noButtonClicks + 1;
+    setNoButtonClicks(newClicks);
+    
+    if (newClicks >= 4) {
+      // After 4 clicks, proceed to predict
+      setUnlockedTabs(current => [...current, 'predict']);
+      setActiveTab('predict');
+      setTabStartTime(Date.now());
+      setShowBonusDialog(false);
+      setNoButtonClicks(0);
+      setNoButtonPosition({ top: '50vh', left: '60vw' });
+      showUserError('Proceeding to Predict round.', 'info');
+    } else {
+      // Move button to random position on entire screen
+      const randomTop = Math.random() * 90 + 5; // 5% to 95%
+      const randomLeft = Math.random() * 90 + 5; // 5% to 95%
+      setNoButtonPosition({ top: `${randomTop}vh`, left: `${randomLeft}vw` });
     }
   };
 
@@ -198,6 +256,73 @@ function App() {
         isProcessing={isProcessing}
         error={error}
       />
+      
+      {showBonusRound && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-4xl mx-4 w-full max-h-[90vh] overflow-y-auto" style={{ backgroundColor: 'var(--card)', color: 'var(--foreground)' }}>
+            <div className="flex justify-between items-center mb-6">
+              <h2 className="text-3xl font-bold" style={{ color: 'var(--chart-6)' }}>🎯 Bonus Round - Ultimate Challenge</h2>
+              <button
+                onClick={handleBonusComplete}
+                disabled={!bonusCompleteEnabled}
+                className="px-4 py-2 rounded-lg font-bold transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ 
+                  backgroundColor: bonusCompleteEnabled ? 'var(--destructive)' : 'var(--muted)', 
+                  color: bonusCompleteEnabled ? 'var(--destructive-foreground)' : 'var(--muted-foreground)'
+                }}
+              >
+                ✅ Complete & Continue
+              </button>
+            </div>
+            <p className="mb-6" style={{ color: 'var(--muted-foreground)' }}>Face the ultimate coding challenge that only legends have conquered!</p>
+            
+            <TabContent 
+              activeTab="bonus" 
+              showPasswordDialog={false}
+              nextTabToUnlock=""
+              onPasswordSubmit={() => {}}
+              isProcessing={false}
+              error={null}
+            />
+          </div>
+        </div>
+      )}
+      
+      {showBonusDialog && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 p-8 rounded-lg max-w-md mx-4 text-center relative" style={{ backgroundColor: 'var(--card)', color: 'var(--foreground)' }}>
+            <h2 className="text-2xl font-bold mb-4" style={{ color: 'var(--primary)' }}>{bonusRoundMessage.title}</h2>
+            <p className="mb-4">{bonusRoundMessage.message}</p>
+            <p className="mb-4 text-yellow-600 dark:text-yellow-400">{bonusRoundMessage.warning}</p>
+            <p className="mb-6 font-semibold">{bonusRoundMessage.question}</p>
+            <div className="flex gap-4 justify-center relative">
+              <button
+                onClick={handleBonusAccept}
+                className="px-6 py-2 rounded-lg font-bold transition-all hover:scale-105"
+                style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }}
+              >
+                🍗 Yes, I'm Ready!
+              </button>
+            </div>
+            <button
+              onClick={handleBonusDecline}
+              className="px-6 py-2 rounded-lg font-bold transition-all hover:scale-105 fixed z-[60]"
+              style={{ 
+                backgroundColor: 'var(--secondary)', 
+                color: 'var(--secondary-foreground)',
+                top: noButtonPosition.top,
+                left: noButtonPosition.left,
+                transform: 'translate(-50%, -50%)'
+              }}
+            >
+              ❌ No, Skip
+            </button>
+            {noButtonClicks > 0 && (
+              <p className="mt-4 text-sm text-red-500">😏 Nice try! Click {4 - noButtonClicks} more times to skip!</p>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

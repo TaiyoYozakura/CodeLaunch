@@ -143,6 +143,26 @@ export const questions = [
     difficulty: 'hard',
     isDBQuestion: true,
     fileExtension: 'md'
+  },
+  
+  // Bonus Round - Ultimate Challenge
+  {
+    id: 16,
+    roundName: 'bonus',
+    title: 'The Legendary Algorithm',
+    description: 'Implement the most efficient solution to solve the classic "Two Sum" problem with O(n) time complexity.',
+    difficulty: 'legendary',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 17,
+    roundName: 'bonus',
+    title: 'Database Master Challenge',
+    description: 'Write a complex SQL query to find the second highest salary from employees table with proper error handling.',
+    difficulty: 'legendary',
+    isDBQuestion: true,
+    fileExtension: 'sql'
   }
 ];
 

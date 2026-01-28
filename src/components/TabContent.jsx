@@ -1,10 +1,15 @@
 import React, { useState } from 'react';
 import { ButtonLoading } from './LoadingStates';
-import { getRandomQuestion } from '../questions';
+import { getRandomQuestion } from '../finalDraftedQuestions';
 import { sandboxPath, mysqlConfig } from '../constants';
 
 const TabContent = ({ activeTab, showPasswordDialog, nextTabToUnlock, onPasswordSubmit, isProcessing, error }) => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
+
+  // Clear question when tab changes
+  React.useEffect(() => {
+    setCurrentQuestion(null);
+  }, [activeTab]);
 
   const getTabContent = (tab) => {
     const tabData = {
@@ -17,6 +22,11 @@ const TabContent = ({ activeTab, showPasswordDialog, nextTabToUnlock, onPassword
         title: 'Detect - Debug & Fix',
         description: 'Identify and fix errors, typos, and bugs in the given code.',
         chartColor: 'var(--chart-2)'
+      },
+      bonus: {
+        title: 'Bonus - Ultimate Challenge',
+        description: 'Face the legendary coding challenge that only the greatest have conquered!',
+        chartColor: 'var(--chart-6)'
       },
       predict: {
         title: 'Predict - Output Guessing',
@@ -193,6 +203,14 @@ const TabContent = ({ activeTab, showPasswordDialog, nextTabToUnlock, onPassword
           <div className="mt-6 p-4 rounded" style={{ backgroundColor: 'var(--muted)', border: '1px solid var(--chart-3)', borderLeft: '4px solid var(--chart-3)' }}>
             <p className="text-sm" style={{ color: 'var(--foreground)' }}>
               🏆 <strong style={{ color: 'var(--chart-3)' }}>Final Challenge:</strong> This is the last stage of CODE EVOLUTION 2026. Give your best explanation!
+            </p>
+          </div>
+        )}
+
+        {activeTab === 'decoded' && (
+          <div className="mt-8 pt-4 border-t text-center" style={{ borderColor: 'var(--border)' }}>
+            <p className="text-sm opacity-60" style={{ color: 'var(--muted-foreground)' }}>
+              Crafted by <span className="font-bold" style={{ color: 'var(--primary)' }}>Lord Aizen</span>
             </p>
           </div>
         )}

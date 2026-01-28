@@ -1,5 +1,5 @@
 import React from 'react';
-import { navText } from '../constants';
+import { navText, deskNumber } from '../constants';
 
 const Navbar = ({ activeTab, unlockedTabs, onTabSwitch, timers, formatTime }) => {
   const tabs = [
@@ -12,7 +12,18 @@ const Navbar = ({ activeTab, unlockedTabs, onTabSwitch, timers, formatTime }) =>
 
   return (
     <nav style={{ backgroundColor: 'var(--card)', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)' }}>
-      <div className="text-center py-4" style={{ borderBottom: '1px solid var(--border)' }}>
+      <div className="text-center py-4 relative" style={{ borderBottom: '1px solid var(--border)' }}>
+        <div className="absolute top-2 right-4">
+          <div className="text-4xl font-black px-4 py-2 rounded-lg" style={{ 
+            background: 'linear-gradient(135deg, var(--primary), var(--secondary))', 
+            color: 'white',
+            textShadow: '2px 2px 4px rgba(0,0,0,0.3)',
+            border: '2px solid var(--border)',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+          }}>
+            {deskNumber}
+          </div>
+        </div>
         <h1 className="text-xl font-bold mb-2" style={{ background: 'linear-gradient(90deg, var(--primary), var(--secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text' }}>{navText}</h1>
         <h2 className="text-lg font-semibold" style={{ color: 'var(--foreground)' }}>
           {activeTab.charAt(0).toUpperCase() + activeTab.slice(1)} - CodeLaunch
