@@ -1,7 +1,7 @@
 import React from 'react';
-import { navText, deskNumber } from '../constants';
+import { navText } from '../constants';
 
-const Navbar = ({ activeTab, unlockedTabs, onTabSwitch, timers, formatTime }) => {
+const Navbar = ({ activeTab, unlockedTabs, onTabSwitch, timers, formatTime, deskNumber }) => {
   const tabs = [
     { id: 'kickoff', name: 'KickOff', color: 'var(--chart-1)' },
     { id: 'detect', name: 'Detect', color: 'var(--chart-2)' },

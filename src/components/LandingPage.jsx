@@ -1,14 +1,15 @@
 import React from 'react';
 import { eventName, festName, deptName } from '../constants';
 
-const LandingPage = ({ onStartPlaying }) => {
+const LandingPage = ({ onStartPlaying, deskNumber }) => {
   return (
     <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--background)' }}>
       <div className="rounded-lg shadow-2xl p-8 max-w-2xl w-full mx-4" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold mb-2" style={{ color: 'var(--primary)' }}>{eventName}</h1>
           <h2 className="text-2xl font-semibold mb-2" style={{ color: 'var(--secondary)' }}>{festName}</h2>
-          <p className="text-lg" style={{ color: 'var(--muted-foreground)' }}>{deptName}</p>
+          <p className="text-lg mb-2" style={{ color: 'var(--muted-foreground)' }}>{deptName}</p>
+          <p className="text-lg font-semibold" style={{ color: 'var(--accent)' }}>{deskNumber}</p>
         </div>
         
         <div className="mb-8 p-6 rounded-lg" style={{ backgroundColor: 'var(--muted)', borderLeft: '4px solid var(--chart-3)' }}>

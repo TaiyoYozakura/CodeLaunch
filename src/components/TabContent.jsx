@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ButtonLoading } from './LoadingStates';
 import { getRandomQuestion } from '../finalDraftedQuestions';
-import { sandboxPath, mysqlConfig } from '../constants';
+import { oneCompilerUrls, sampleTableData } from '../constants';
 
 const TabContent = ({ activeTab, showPasswordDialog, nextTabToUnlock, onPasswordSubmit, isProcessing, error }) => {
   const [currentQuestion, setCurrentQuestion] = useState(null);
@@ -53,48 +53,14 @@ const TabContent = ({ activeTab, showPasswordDialog, nextTabToUnlock, onPassword
     setCurrentQuestion(question);
   };
 
-  const handleOpenSandbox = async () => {
-    console.log('Current question:', currentQuestion);
-    console.log('Is DB Question:', currentQuestion?.isDBQuestion);
-    
-    if (currentQuestion?.isDBQuestion) {
-      console.log('Opening MySQL...');
-      try {
-        const response = await fetch('http://localhost:3001/api/open-mysql', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(mysqlConfig)
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to open MySQL');
-        }
-        console.log('MySQL opened successfully');
-      } catch (err) {
-        console.error('Error opening MySQL:', err);
-        alert('Failed to open MySQL. Make sure the backend server is running.');
-      }
-    } else {
-      console.log('Opening VS Code...');
-      try {
-        const response = await fetch('http://localhost:3001/api/open-vscode', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            folderPath: sandboxPath,
-            fileExtension: currentQuestion?.fileExtension || 'txt'
-          })
-        });
-        
-        if (!response.ok) {
-          throw new Error('Failed to open VS Code');
-        }
-        console.log('VS Code opened successfully');
-      } catch (err) {
-        console.error('Error opening VS Code:', err);
-        alert('Failed to open VS Code. Make sure the backend server is running.');
-      }
+  const handleOpenSandbox = () => {
+    if (!currentQuestion) {
+      alert('Please get a question first!');
+      return;
     }
+    
+    const url = oneCompilerUrls[currentQuestion.fileExtension] || oneCompilerUrls.py;
+    window.open(url, '_blank');
   };
 
   const content = getTabContent(activeTab);
@@ -127,6 +93,13 @@ const TabContent = ({ activeTab, showPasswordDialog, nextTabToUnlock, onPassword
               </div>
             </div>
             <p style={{ color: 'var(--foreground)' }}>{currentQuestion.description}</p>
+            
+            {currentQuestion.isDBQuestion && (
+              <div className="mt-4 p-3 rounded" style={{ backgroundColor: 'var(--background)', border: '1px solid var(--border)' }}>
+                <h4 className="text-sm font-semibold mb-2" style={{ color: 'var(--chart-2)' }}>📊 Sample Table Data:</h4>
+                <pre className="text-xs overflow-x-auto" style={{ color: 'var(--muted-foreground)' }}>{sampleTableData}</pre>
+              </div>
+            )}
           </div>
         )}
 
@@ -143,7 +116,7 @@ const TabContent = ({ activeTab, showPasswordDialog, nextTabToUnlock, onPassword
             className="font-bold py-3 px-6 rounded-lg transition-all hover:scale-105 shadow-lg"
             style={{ backgroundColor: 'var(--accent)', color: 'var(--accent-foreground)' }}
           >
-            💻 Open Sandbox Env
+            💻 Open Sandbox
           </button>
         </div>
         

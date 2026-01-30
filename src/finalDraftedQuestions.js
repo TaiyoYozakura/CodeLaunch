@@ -1510,6 +1510,285 @@ Expected Output:
   },
   
   // ========================================
+  // 🔴 ROUND 5 – DECODED (Algorithm Explanation)
+  // ========================================
+  
+  // Search Algorithms
+  {
+    id: 175,
+    roundName: 'decoded',
+    title: 'Explain Linear Search Algorithm',
+    description: `def linear_search(arr, target):
+    for i in range(len(arr)):
+        if arr[i] == target:
+            return i
+    return -1
+
+# Example usage
+arr = [64, 34, 25, 12, 22, 11, 90]
+result = linear_search(arr, 22)
+print(f"Element found at index: {result}")
+
+Explain how this linear search algorithm works, its time complexity, and when you would use it.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 176,
+    roundName: 'decoded',
+    title: 'Explain Binary Search Algorithm',
+    description: `def binary_search(arr, target):
+    left, right = 0, len(arr) - 1
+    
+    while left <= right:
+        mid = (left + right) // 2
+        if arr[mid] == target:
+            return mid
+        elif arr[mid] < target:
+            left = mid + 1
+        else:
+            right = mid - 1
+    return -1
+
+# Example usage
+arr = [11, 12, 22, 25, 34, 64, 90]  # sorted array
+result = binary_search(arr, 25)
+print(f"Element found at index: {result}")
+
+Explain how this binary search algorithm works, its time complexity, and why the array must be sorted.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 177,
+    roundName: 'decoded',
+    title: 'Explain Bubble Sort Algorithm',
+    description: `def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(0, n - i - 1):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr
+
+# Example usage
+arr = [64, 34, 25, 12, 22, 11, 90]
+print("Original:", arr)
+sorted_arr = bubble_sort(arr.copy())
+print("Sorted:", sorted_arr)
+
+Explain how bubble sort works, its time complexity, and why it's called "bubble" sort.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 178,
+    roundName: 'decoded',
+    title: 'Explain Selection Sort Algorithm',
+    description: `def selection_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        min_idx = i
+        for j in range(i + 1, n):
+            if arr[j] < arr[min_idx]:
+                min_idx = j
+        arr[i], arr[min_idx] = arr[min_idx], arr[i]
+    return arr
+
+# Example usage
+arr = [64, 25, 12, 22, 11]
+print("Original:", arr)
+sorted_arr = selection_sort(arr.copy())
+print("Sorted:", sorted_arr)
+
+Explain how selection sort works, its time complexity, and the selection process in each iteration.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 179,
+    roundName: 'decoded',
+    title: 'Explain Insertion Sort Algorithm',
+    description: `def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr
+
+# Example usage
+arr = [12, 11, 13, 5, 6]
+print("Original:", arr)
+sorted_arr = insertion_sort(arr.copy())
+print("Sorted:", sorted_arr)
+
+Explain how insertion sort works, its time complexity, and why it's efficient for small datasets.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 180,
+    roundName: 'decoded',
+    title: 'Explain Quick Sort Algorithm',
+    description: `def quick_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    
+    pivot = arr[len(arr) // 2]
+    left = [x for x in arr if x < pivot]
+    middle = [x for x in arr if x == pivot]
+    right = [x for x in arr if x > pivot]
+    
+    return quick_sort(left) + middle + quick_sort(right)
+
+# Example usage
+arr = [3, 6, 8, 10, 1, 2, 1]
+print("Original:", arr)
+sorted_arr = quick_sort(arr)
+print("Sorted:", sorted_arr)
+
+Explain how quick sort works, the role of the pivot, its time complexity, and why it's called "quick" sort.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 181,
+    roundName: 'decoded',
+    title: 'Explain Merge Sort Algorithm',
+    description: `def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    
+    return merge(left, right)
+
+def merge(left, right):
+    result = []
+    i = j = 0
+    
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+    
+    result.extend(left[i:])
+    result.extend(right[j:])
+    return result
+
+# Example usage
+arr = [38, 27, 43, 3, 9, 82, 10]
+print("Original:", arr)
+sorted_arr = merge_sort(arr)
+print("Sorted:", sorted_arr)
+
+Explain how merge sort works, the divide-and-conquer approach, its time complexity, and the merging process.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 182,
+    roundName: 'decoded',
+    title: 'Explain Recursive Factorial Algorithm',
+    description: `def factorial(n):
+    if n == 0 or n == 1:
+        return 1
+    else:
+        return n * factorial(n - 1)
+
+# Example usage
+result = factorial(5)
+print(f"5! = {result}")
+
+Explain how this recursive factorial algorithm works, the base case, recursive case, and its time/space complexity.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 183,
+    roundName: 'decoded',
+    title: 'Explain Dynamic Programming - Fibonacci',
+    description: `def fibonacci_dp(n):
+    if n <= 1:
+        return n
+    
+    dp = [0] * (n + 1)
+    dp[0] = 0
+    dp[1] = 1
+    
+    for i in range(2, n + 1):
+        dp[i] = dp[i-1] + dp[i-2]
+    
+    return dp[n]
+
+# Example usage
+result = fibonacci_dp(10)
+print(f"10th Fibonacci number: {result}")
+
+Explain how this dynamic programming approach works, why it's more efficient than naive recursion, and the concept of memoization.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  {
+    id: 184,
+    roundName: 'decoded',
+    title: 'Explain Graph Traversal - BFS Algorithm',
+    description: `from collections import deque
+
+def bfs(graph, start):
+    visited = set()
+    queue = deque([start])
+    result = []
+    
+    while queue:
+        vertex = queue.popleft()
+        if vertex not in visited:
+            visited.add(vertex)
+            result.append(vertex)
+            
+            for neighbor in graph[vertex]:
+                if neighbor not in visited:
+                    queue.append(neighbor)
+    
+    return result
+
+# Example usage
+graph = {
+    'A': ['B', 'C'],
+    'B': ['A', 'D', 'E'],
+    'C': ['A', 'F'],
+    'D': ['B'],
+    'E': ['B', 'F'],
+    'F': ['C', 'E']
+}
+
+result = bfs(graph, 'A')
+print(f"BFS traversal: {result}")
+
+Explain how Breadth-First Search (BFS) works, the role of the queue, its time complexity, and when you would use BFS over DFS.`,
+    difficulty: 'hard',
+    isDBQuestion: false,
+    fileExtension: 'py'
+  },
+  
+  // ========================================
   // 🔵 ROUND 3 – PREDICT THE OUTPUT
   // ========================================
   

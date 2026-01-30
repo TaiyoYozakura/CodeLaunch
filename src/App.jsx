@@ -6,6 +6,8 @@ import { tabTimers, tabPasswords, passwordDialogDelay, reloadProtectionDuration,
 import { logError, showUserError, validatePassword, validateTabTransition } from './utils/errorHandler';
 
 function App() {
+  const [showDeskInput, setShowDeskInput] = useState(true);
+  const [deskNumber, setDeskNumber] = useState('');
   const [showLanding, setShowLanding] = useState(true);
   const [activeTab, setActiveTab] = useState('kickoff');
   const [unlockedTabs, setUnlockedTabs] = useState(['kickoff']);
@@ -229,14 +231,58 @@ function App() {
     }
   };
 
+  const handleDeskSubmit = (e) => {
+    e.preventDefault();
+    const desk = e.target.desk.value.trim();
+    if (desk) {
+      setDeskNumber(desk);
+      setShowDeskInput(false);
+    }
+  };
+
   const formatTime = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  if (showDeskInput) {
+    return (
+      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: 'var(--background)' }}>
+        <div className="rounded-lg shadow-2xl p-8 max-w-md w-full mx-4" style={{ backgroundColor: 'var(--card)', color: 'var(--card-foreground)' }}>
+          <div className="text-center mb-6">
+            <h1 className="text-2xl font-bold mb-4" style={{ color: 'var(--primary)' }}>Enter Desk Number</h1>
+            <p className="text-sm" style={{ color: 'var(--muted-foreground)' }}>Please enter your assigned desk number to continue</p>
+          </div>
+          <form onSubmit={handleDeskSubmit}>
+            <input
+              type="text"
+              name="desk"
+              placeholder="e.g., DESK 0101"
+              className="w-full p-3 rounded-lg mb-4 focus:outline-none focus:ring-2"
+              style={{ 
+                backgroundColor: 'var(--background)', 
+                color: 'var(--foreground)', 
+                border: '1px solid var(--border)'
+              }}
+              autoFocus
+              required
+            />
+            <button 
+              type="submit"
+              className="w-full font-bold py-3 px-6 rounded-lg transition-all hover:scale-105"
+              style={{ backgroundColor: 'var(--primary)', color: 'var(--primary-foreground)' }}
+            >
+              Continue
+            </button>
+          </form>
+        </div>
+      </div>
+    );
+  }
+
   if (showLanding) {
-    return <LandingPage onStartPlaying={handleStartPlaying} />;
+    return <LandingPage onStartPlaying={handleStartPlaying} deskNumber={deskNumber} />;
   }
 
   return (
@@ -247,6 +293,7 @@ function App() {
         onTabSwitch={handleTabSwitch}
         timers={timers}
         formatTime={formatTime}
+        deskNumber={deskNumber}
       />
       <TabContent 
         activeTab={activeTab} 
